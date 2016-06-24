@@ -1,25 +1,50 @@
 <?php
 
-class CsvDataType
-{
-    static public function getInternalData($code)
-    {
-        // TODO: Implement getInternalData() method.
-    }
+require_once(dirname(__FILE__) . "/../connection.php");
 
-    static public function ConvertTo ($internalData, $headers)
+class CsvDataType implements DataTypesInterface
+{
+    /**
+     * @param string $code
+     * @param boolean $headers
+     * @return array
+     */
+    static public function GetInternalData($code, $headers)
     {
-        if($headers) {
-            if (!empty($internalData[0])) {
-                $empty = [];
-                array_unshift($internalData, $empty);
+        $table = [];
+
+        $rows = explode("\r\n", $code);
+
+        foreach ($rows as $row) {
+            $cells = explode(",", $row);
+            $table[] = $cells;
+        }
+
+        if ($headers) {
+            $keys = $table[0];
+
+            $table = array_slice($table, 1);
+
+            $newTable = [[]];
+            foreach ($table as $tab) {
+                array_push($newTable, array_combine($keys, $tab));
             }
         } else {
-            if (empty($internalData[0])) {
-                $internalData = array_slice($internalData, 1);
+            $newTable = $table;
+            if (empty($newTable[0])) {
+                array_slice($newTable, 1);
             }
         }
 
+        return $newTable;
+    }
+
+    /**
+     * @param array $internalData
+     * @return string
+     */
+    static public function ConvertTo ($internalData)
+    {
         $array = [];
 
         // If table have headings first element in the array will be empty. If it's empty we will take headings from next element and put it in an array

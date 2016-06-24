@@ -1,12 +1,15 @@
 <?php
 
-class HtmlTableDataType
+require_once(dirname(__FILE__) . "/../connection.php");
+
+class HtmlTableDataType implements DataTypesInterface
 {
     /**
      * @param string $code
+     * @param boolean $headers
      * @return array
      */
-    static public function getInternalData ($code)
+    static public function GetInternalData ($code, $headers)
     {
         $DOM = new DOMDocument;
         $DOM->loadHTML($code);
@@ -17,10 +20,10 @@ class HtmlTableDataType
         $rows = $tables->item(0)->getElementsByTagName('tr');
 
         // get each column headers by tag name
-        $headers = $rows->item(0)->getElementsByTagName('th');
-        $row_headers = NULL;
-        foreach ($headers as $node) {
-            $row_headers[] = $node->nodeValue;
+        $headColumn = $rows->item(0)->getElementsByTagName('th');
+        $rowHeaders = NULL;
+        foreach ($headColumn as $node) {
+            $rowHeaders[] = $node->nodeValue;
         }
 
         $table = [];
@@ -32,14 +35,25 @@ class HtmlTableDataType
             $row = [];
             $i = 0;
             foreach ($cols as $node) {
-                if($row_headers==NULL) {
+                if($rowHeaders==NULL) {
                     $row[] = $node->nodeValue;
                 } else {
-                    $row[$row_headers[$i]] = $node->nodeValue;
+                    $row[$rowHeaders[$i]] = $node->nodeValue;
                 }
                 $i++;
             }
             $table[] = $row;
+        }
+
+        if($headers) {
+            if (!empty($table[0])) {
+                $empty = [];
+                array_unshift($table, $empty);
+            }
+        } else {
+            if (empty($table[0])) {
+                $table = array_slice($table, 1);
+            }
         }
 
         return $table;
@@ -47,22 +61,10 @@ class HtmlTableDataType
 
     /**
      * @param array $internalData
-     * @param boolean $headers
      * @return string
      */
-    static public function ConvertTo ($internalData, $headers)
+    static public function ConvertTo ($internalData)
     {
-        if($headers) {
-            if (!empty($internalData[0])) {
-                $empty = [];
-                array_unshift($internalData, $empty);
-            }
-        } else {
-            if (empty($internalData[0])) {
-                $internalData = array_slice($internalData, 1);
-            }
-        }
-
         $newCode = "";
 
         foreach ($internalData as $row) {

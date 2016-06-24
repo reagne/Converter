@@ -1,25 +1,20 @@
 <?php
 
-class HtmlListDataType
+require_once(dirname(__FILE__) . "/../connection.php");
+
+class HtmlListDataType implements DataTypesInterface
 {
-    static public function getInternalData ($code)
+    /**
+     * @param $code
+     * @param $headers
+     * @return array
+     */
+    static public function GetInternalData ($code, $headers)
     {
         $DOM = new DOMDocument;
         $DOM->loadHTML($code);
 
         $tables = $DOM->getElementsByTagName('ul')->item(0);
-
-        // get each column headers by tag name
-        //TODO
-//        $headers = $DOM->getElementsByTagName('ul > li');
-//        $headersValues = [];
-//        var_dump($headers->item(0));
-//        foreach ($headers as $header) {
-//
-//            if($header->getElementByTagName('ul') != NULL) {
-//                $headersValues[] = $header->nodeValue;
-//            }
-//        }
 
         //get all rows from the table
         $rows = $tables->getElementsByTagName('ul');
@@ -32,35 +27,38 @@ class HtmlListDataType
             $cols = $row->getElementsByTagName('li');
 
             $row = [];
-            $i = 0;
             foreach ($cols as $node) {
                 $row[] = $node->nodeValue;
-//                if(empty($headers)) {
-//                    $row[] = $node->nodeValue;
-//                } else {
-//                    $row[$headers[$i]] = $node->nodeValue;
-//                }
-//                $i++;
             }
 
             $table[] = $row;
         }
-        return $table;
-    }
 
-    static public function ConvertTo ($internalData, $headers)
-    {
         if($headers) {
-            if (!empty($internalData[0])) {
-                $empty = [];
-                array_unshift($internalData, $empty);
+            $xml = simplexml_load_string($code, "SimpleXMLElement", LIBXML_NOCDATA);
+            $json = json_encode($xml);
+            $keys = json_decode($json,TRUE)['li'];
+
+            $newTable = [[]];
+            foreach ($table as $tab) {
+                array_push($newTable, array_combine($keys, $tab));
             }
         } else {
-            if (empty($internalData[0])) {
-                $internalData = array_slice($internalData, 1);
+            $newTable = $table;
+            if (empty($newTable[0])) {
+                array_slice($newTable, 1);
             }
         }
 
+        return $newTable;
+    }
+
+    /**
+     * @param $internalData
+     * @return string
+     */
+    static public function ConvertTo ($internalData)
+    {
         $newCode = "";
         $firstRow = [];
 

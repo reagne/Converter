@@ -1,38 +1,46 @@
 <?php
 
-class XmlDataType
+require_once(dirname(__FILE__) . "/../connection.php");
+
+class XmlDataType implements DataTypesInterface
 {
     /**
      * @param string $code
+     * @param boolean $headers
+     * @return array
      */
-    static public function getInternalData($code)
+    static public function GetInternalData($code, $headers)
     {
-        // TODO: Implement getInternalData() method.
+        $xml = simplexml_load_string($code, "SimpleXMLElement", LIBXML_NOCDATA);
+        $json = json_encode($xml);
+        $table = [];
+        $table[] = json_decode($json,TRUE);
+
+        if($headers) {
+            if (!empty($table[0])) {
+                $empty = [];
+                array_unshift($table, $empty);
+            }
+        } else {
+            if (empty($table[0])) {
+                $table = array_slice($table, 1);
+            }
+        }
+
+        return $table;
     }
 
     /**
      * @param array $internalData
-     * @param bool $headers
      * @return string
      */
-    static public function ConvertTo ($internalData, $headers)
+    static public function ConvertTo ($internalData)
     {
-        if($headers) {
-            if (!empty($internalData[0])) {
-                $empty = [];
-                array_unshift($internalData, $empty);
-            }
-        } else {
-            if (empty($internalData[0])) {
-                $internalData = array_slice($internalData, 1);
-            }
-        }
-
         $newCode = "";
 
         foreach ($internalData as $row) {
             $cells = "";
-            // If table have headings there will be empty element in the array at the beggining. If there is emty element create <thead> at the beginning of the code
+            // If table have headings there will be empty element in the array at the beginning. If there is emty element create <thead> at the beginning of the code
             if (empty($row)) {
                 $firstRow = "";
 
@@ -56,7 +64,7 @@ class XmlDataType
             }
         }
 
-        $convertedCode = "<table>" . PHP_EOL . $newCode . "</table>";
+        $convertedCode = "<xmlTable>" . PHP_EOL . $newCode . "</xmlTable>";
 
         return $convertedCode;
     }

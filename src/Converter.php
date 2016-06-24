@@ -76,15 +76,16 @@ class Converter
     /**
      * @param $inputType
      * @param $code
+     * @param $headers
      * @return array
      */
-    private function convertFrom($inputType, $code)
+    private function convertFrom($inputType, $code, $headers)
     {
         foreach (self::$NameDataTypes as $input => $classDataType) {
             if ($input == $inputType) {
                 $myClass = $classDataType[1];
 
-                return $myClass::getInternalData($code);
+                return $myClass::GetInternalData($code, $headers);
             }
         }
     }
@@ -102,9 +103,9 @@ class Converter
             if ($output == $outputType) {
                 $myClass = $classDataType[1];
 
-                $internalData = self::convertFrom($inputType, $code);
+                $internalData = self::convertFrom($inputType, $code, $headers);
 
-                return $myClass::ConvertTo($internalData, $headers);
+                return $myClass::ConvertTo($internalData);
             }
         }
     }
