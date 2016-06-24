@@ -1,9 +1,12 @@
 <?php
 session_start();
 
-require_once(dirname(__FILE__) . "/HtmlInput.php");
-require_once(dirname(__FILE__) . "/HtmlListInput.php");
-require_once(dirname(__FILE__) . "/XmlInput.php");
-require_once(dirname(__FILE__) . "/CsvInput.php");
-require_once(dirname(__FILE__) . "/AsciiInput.php");
-require_once(dirname(__FILE__) . "/JsonInput.php");
+require_once(dirname(__FILE__) . "/Converter.php");
+
+require_once(dirname(__FILE__) . "/dataTypes/HtmlTableDataType.php");
+require_once(dirname(__FILE__) . "/dataTypes/HtmlListDataType.php");
+require_once(dirname(__FILE__) . "/dataTypes/XmlDataType.php");
+require_once(dirname(__FILE__) . "/dataTypes/CsvDataType.php");
+require_once(dirname(__FILE__) . "/dataTypes/AsciiDataType.php");
+require_once(dirname(__FILE__) . "/dataTypes/JsonDataType.php");
+

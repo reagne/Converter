@@ -17,7 +17,7 @@ require_once("./src/connection.php");
 
 <form action="index.php" method="post">
     <select name="typeInput" id="typeInput">
-        <?php include("./src/selectTypes.php") ?>
+        <?php Converter::SelectOptions() ?>
     </select>
     <legend>Do you want column headers in your table?
     <select name="head"><option value=0>No</option><option value=1>Yes</option></select>
@@ -33,7 +33,7 @@ require_once("./src/connection.php");
     echo('</textarea>');
     ?>
     <select name="typeOutput" id="typeOutput">
-        <?php include("./src/selectTypes.php") ?>
+        <?php Converter::SelectOptions() ?>
     </select>
     <input type="submit" value="Convert" name="convert" ">
 </form>
@@ -49,38 +49,9 @@ echo('<textarea rows="10" cols="50" name="codeOutput" placeholder="Your converte
         $code = trim($code);
 
         if (strlen($code) > 10) { //tutaj powinny być switche
-            switch ($typeInput) {
-                case "htmlTable" :
-                    $htmlInput = new HtmlInput($code);
-                    $internalData = $htmlInput->getInternalData($code);
-                    break;
+            $converter = new Converter($typeInput, $typeOutput, $code, $headers);
 
-                case "htmlList" :
-                    $htmlListInput = new HtmlListInput($code);
-                    $internalData = $htmlListInput->getInternalData($code);
-                    break;
-
-                case "json" :
-                    $jsonInput = new JsonInput($code);
-                    $internalData = $jsonInput->getInternalData($code);
-                    break;
-
-                case "xml" :
-                    $xmlInput = new XmlInput($code);
-                    $internalData = $xmlInput->getInternalData($code);
-                    break;
-
-                case "csv" :
-                    $csvInput = new CsvInput($code);
-                    $internalData = $csvInput->getInternalData($code);
-                    break;
-
-                case "ascii" :
-                    $asciiInput = new AsciiInput($code);
-                    $internalData = $asciiInput->getInternalData($code);
-                    break;
-            }
-            echo HtmlInput::ConvertTo($internalData, $typeOutput, $headers);
+            echo $converter->convertTo($typeInput, $typeOutput, $code, $headers);
         } else {
             echo("Your code is too short.");
         }
