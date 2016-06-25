@@ -26,11 +26,13 @@ class CsvDataType implements DataTypesInterface
             $table = array_slice($table, 1);
 
             $newTable = [[]];
+
             foreach ($table as $tab) {
                 array_push($newTable, array_combine($keys, $tab));
             }
         } else {
             $newTable = $table;
+
             if (empty($newTable[0])) {
                 array_slice($newTable, 1);
             }
@@ -43,7 +45,7 @@ class CsvDataType implements DataTypesInterface
      * @param array $internalData
      * @return string
      */
-    static public function ConvertTo ($internalData)
+    static public function ConvertTo($internalData)
     {
         $array = [];
 
@@ -59,9 +61,11 @@ class CsvDataType implements DataTypesInterface
         foreach ($internalData as $row) {
             if (!empty($row)) {
                 $cells = [];
+
                 foreach ($row as $cell) {
                     $cells[] = $cell;
                 }
+
                 $array[] = implode(',', $cells);
             }
         }

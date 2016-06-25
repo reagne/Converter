@@ -21,12 +21,12 @@ class AsciiDataType implements DataTypesInterface
             $newRow = preg_replace('/[|\+\-_\*]/', '#', $row);
             $cells = explode("#", $newRow);
             $cells = array_filter($cells, function($val){ return $val; });
+
             $table[] = $cells;
         }
 
         if ($headers) {
             $keys = $table[0];
-
             $table = array_slice($table, 1);
 
             $newTable = [[]];
@@ -36,6 +36,7 @@ class AsciiDataType implements DataTypesInterface
             }
         } else {
             $newTable = $table;
+
             if (empty($table[0])) {
                 $newTable = array_slice($newTable, 1);
             }
@@ -69,8 +70,10 @@ class AsciiDataType implements DataTypesInterface
         foreach ($internalData as $row) {
             if (!empty($row)) {
                 $cells = [];
+
                 foreach ($row as $cell) {
                     $cells[] = $cell;
+
                     if ($padding < strlen($cell)) {
                         $padding = strlen($cell);
                     }
@@ -81,6 +84,7 @@ class AsciiDataType implements DataTypesInterface
 
         foreach ($array as $items) {
             $newCode .= "|";
+
             foreach ($items as $item) {
                 $newCode .= str_pad($item, $padding) . "|";
             }

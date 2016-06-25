@@ -1,4 +1,6 @@
 <?php
+// since the project is small, instead namespaces it uses connection file.
+
 session_start();
 
 require_once(dirname(__FILE__) . "/Converter.php");

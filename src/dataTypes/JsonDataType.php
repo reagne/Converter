@@ -31,7 +31,7 @@ class JsonDataType implements DataTypesInterface
      * @param array $internalData
      * @return string
      */
-    static public function ConvertTo ($internalData)
+    static public function ConvertTo($internalData)
     {
         $convertedCode = json_encode($internalData);
 

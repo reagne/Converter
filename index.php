@@ -6,6 +6,7 @@ require_once("./src/connection.php");
 <html>
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -19,17 +20,16 @@ require_once("./src/connection.php");
         <div class="container-fluid text-center">
             <div class="row">
                 <div class="col-md-8 col-md-offset-2 ">
+
                     <h1>Table Converter</h1>
-                    <ol>
-                        <li>Choose a type in which your table is written</li>
-                        <li>Paste the code into the field</li>
-                        <li>Choose a type you want your code convert into</li>
-                    </ol>
 
                     <form action="index.php" method="post">
+
                         <legend>Choose input format:
                             <select name="typeInput" id="typeInput">
-                                <?php Converter::SelectOptions() ?>
+                                <?php
+                                Converter::SelectOptions();
+                                ?>
                             </select>
                         </legend>
 
@@ -42,25 +42,29 @@ require_once("./src/connection.php");
 
                         <?php
                         echo('<textarea rows="10" cols="50" name="codeInput" id="codeInput" placeholder="Paste your code here...">');
-                            if(!isset($_SESSION["currentCode"])) {
+                            if (!isset($_SESSION["currentCode"])) {
                                 $_SESSION["currentCode"] = $_POST["codeInput"];
                             } else if ($_SESSION["currentCode"] != $_POST["codeInput"]) {
                                 $_SESSION["currentCode"] = $_POST["codeInput"];
                             }
-                            echo $_SESSION["currentCode"];
+
+                            echo ($_SESSION["currentCode"]);
+
                         echo('</textarea>');
                         ?>
 
                         <legend>Choose format you want your table to convert:
                             <select name="typeOutput" id="typeOutput">
-                                <?php Converter::SelectOptions() ?>
+                                <?php
+                                Converter::SelectOptions();
+                                ?>
                             </select>
                         </legend>
 
                         <input type="submit" value="Convert" name="convert" id="convert" class="btn btn-default btn-lg center-block">
                     </form>
 
-                            <legend>Get your new code!</legend>
+                    <legend>Get your new code!</legend>
                     <?php
                     echo('<textarea rows="10" cols="50" name="codeOutput" placeholder="Your converted code...">');
                         if($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -71,7 +75,7 @@ require_once("./src/connection.php");
                             $code = $_POST["codeInput"];
                             $code = trim($code);
 
-                            if (strlen($code) > 10) { //tutaj powinny być switche
+                            if (strlen($code) > 10) {
                                 $converter = new Converter($typeInput, $typeOutput, $code, $headers);
 
                                 echo $converter->convertTo($typeInput, $typeOutput, $code, $headers);
@@ -86,4 +90,3 @@ require_once("./src/connection.php");
         </div>
     </body>
 </html>
-<?php

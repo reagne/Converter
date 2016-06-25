@@ -74,9 +74,9 @@ class Converter
     }
 
     /**
-     * @param $inputType
-     * @param $code
-     * @param $headers
+     * @param string $inputType
+     * @param string $code
+     * @param boolean $headers
      * @return array
      */
     private function convertFrom($inputType, $code, $headers)
@@ -91,10 +91,10 @@ class Converter
     }
 
     /**
-     * @param $inputType
-     * @param $outputType
-     * @param $code
-     * @param $headers
+     * @param string $inputType
+     * @param string $outputType
+     * @param string $code
+     * @param boolean $headers
      * @return string
      */
     public function convertTo($inputType, $outputType, $code, $headers)
@@ -105,8 +105,9 @@ class Converter
 
                 $internalData = self::convertFrom($inputType, $code, $headers);
 
-                return $myClass::ConvertTo($internalData);
+                return !empty($internalData) ? $myClass::ConvertTo($internalData) : "Incorrect data given. Try again.";
             }
         }
+        return "Incorrect data given. Try again.";
     }
 }

@@ -21,12 +21,12 @@ class HtmlListDataType implements DataTypesInterface
 
         $table = [];
 
-        foreach ($rows as $row)
-        {
+        foreach ($rows as $row) {
             // get each column by tag name
             $cols = $row->getElementsByTagName('li');
 
             $row = [];
+
             foreach ($cols as $node) {
                 $row[] = $node->nodeValue;
             }
@@ -34,17 +34,19 @@ class HtmlListDataType implements DataTypesInterface
             $table[] = $row;
         }
 
-        if($headers) {
+        if ($headers) {
             $xml = simplexml_load_string($code, "SimpleXMLElement", LIBXML_NOCDATA);
             $json = json_encode($xml);
             $keys = json_decode($json,TRUE)['li'];
 
             $newTable = [[]];
+
             foreach ($table as $tab) {
                 array_push($newTable, array_combine($keys, $tab));
             }
         } else {
             $newTable = $table;
+
             if (empty($newTable[0])) {
                 array_slice($newTable, 1);
             }
@@ -75,6 +77,7 @@ class HtmlListDataType implements DataTypesInterface
         if (empty($firstRow)) {
             foreach ($internalData as $row) {
                 $cells .= "<li>" . PHP_EOL . "<ul>" . PHP_EOL;
+
                 foreach ($row as $key => $cell) {
                     $cells .= "<li>" . $cell . "</li>" . PHP_EOL;
                 }
